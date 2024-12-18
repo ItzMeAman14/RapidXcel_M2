@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify,render_template
+from flask import Flask,request,jsonify
 from flask_cors import CORS
 import sqlite3
 
@@ -69,10 +69,7 @@ def add_task():
         return jsonify({"danger":"Some Error Occured"})
     
     
-<<<<<<< HEAD
 # Route to delete Stock using ID
-=======
->>>>>>> c0d51336463e263fde6d3a47c2c60481d84c5bd4
 @app.route('/deleteStock', methods=['POST'])
 def delete_stock():
     try:
@@ -91,7 +88,7 @@ def update_stock():
     try:
         data = request.get_json()
         idtToUpdate = data["id"]
-        name = "" if not "name" in data else data["name"]
+        name = "" if "name" not in data else data["name"]
         price = data["price"]
         quantity = data["quantity"]
         weight = data["weight"]
@@ -112,36 +109,6 @@ def update_stock():
         print(e)
         return jsonify({"danger":"Some Error Occured"})
           
-
-@app.route('/updateStock',methods=["POST"])
-def update_stock():
-    try:
-        data = request.get_json()
-        idtToUpdate = data["id"]
-        name = "" if not "name" in data else data["name"]
-        price = data["price"]
-        quantity = data["quantity"]
-        
-        if not name:
-            return jsonify({"danger":"Name not Provided"})
-        
-        db = get_db()
-        db.execute('''
-            UPDATE stocks
-            SET price = ?, quantity = ?, stock_name = ?
-            WHERE stock_id = ?
-        ''', (price, quantity,name, idtToUpdate))
-        db.commit()
-        
-        return jsonify({"success":"Stock Updated Successfully"})        
-    except sqlite3.Error as e:
-        print(e)
-        return jsonify({"danger":"Some Error Occured"})
-          
-
-@app.route("/")
-def home():
-    return render_template('test.html')
 
 # Run the app
 if __name__ == '__main__':

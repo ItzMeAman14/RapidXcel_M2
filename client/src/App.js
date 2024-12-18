@@ -2,21 +2,28 @@ import './App.css';
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom';
 import Home from './Components/Home'
 import AddStock from './Components/AddStock';
-import Navbar from './Components/Navbar';
 import UpdateStock from './Components/UpdateStock';
+import DashboardMetrics from './Components/DashboardMetrics';
+import Sidebar from './Components/Sidebar';
+import { Fragment } from 'react';
 
 function App() {
   return (
+    <Router>
     <div className="App">
-      <Router>
-        <Navbar/>
+      <Sidebar/>
         <Routes>
-          <Route path='/' element={<Home/>} />
+          <Route path='/' element={
+            <Fragment>
+              <DashboardMetrics/>
+              <Home/>
+            </Fragment>
+          } />
           <Route path='/addStock' element={<AddStock/>} />
           <Route path='/update/:id' element={<UpdateStock/>} />
         </Routes>
-      </Router>
-    </div>
+      </div>
+    </Router>
   );
 }
 

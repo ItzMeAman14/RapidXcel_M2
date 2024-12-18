@@ -2,7 +2,10 @@ import React,{ useState, useEffect, useRef } from 'react';
 import Loader from './Loader';
 import Modal from './Modal';
 import Alert from './Alert';
+import "../css/Home.css";
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Home = () => {
     const [data, setdata] = useState([]);
@@ -46,7 +49,6 @@ const Home = () => {
             })
 
             const parRes = await res.json();
-            console.log(parRes);
             setalert({
                 status:true,
                 type:Object.keys(parRes)[0],
@@ -69,13 +71,34 @@ const Home = () => {
       },3000);
     }, [alert.status]);
 
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if(data.length <= 5){
+                setalert({
+                    status:true,
+                    type:"danger",
+                    msg:"Low Stocks Level"
+                })
+            }
+        },5000)
+
+        return () => { 
+            clearInterval(interval)
+            setalert({
+                status:false
+            })
+        };
+    }, [data]);
+
   return (
-    <div className='container my-3'>
+    <div className='orders-table'>
         { modal.status && <Modal msg="No internet Connection"/> }
-        <Alert/>
         {alert.status && <Alert type={alert.type} msg={alert.msg} />}
-        <h1 align="center" style={{"textDecoration":"underline"}}>Stock Management</h1>
-        <table className="table table-hover table-striped table-bordered my-3">
+        <h2>Stock Management</h2>
+        <div className='table-container'>
+
+        <table>
             <thead>
                 <tr>
                 <th scope="col">Stock Id</th>
@@ -90,14 +113,20 @@ const Home = () => {
                 { data.map((stock) => {
                     return (
                         <tr key={stock.stock_id}>
-                            <th scope="row">{stock.stock_id}</th>
+                            <td>{stock.stock_id}</td>
                             <td>{stock.stock_name}</td>
                             <td>{stock.price}</td>
                             <td>{stock.quantity}</td>
                             <td>{stock.weight}</td>
-                            <td>
-                                <button onClick={ () => { deleteStock(stock.stock_id) } } className='btn btn-sm btn-outline-danger mx-2'>Delete</button>
-                                <Link className='btn btn-sm btn-outline-primary' to={`/update/${stock.stock_id}`} >Update</Link>
+                            <td className='actions'>
+                                <button className='delete-btn' onClick={ () => { deleteStock(stock.stock_id) } }>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                                <button className='edit-btn'>
+                                <Link className='edit-btn' to={`/update/${stock.stock_id}`} >
+                                <FontAwesomeIcon icon={faEdit} />
+                                </Link>
+                                </button>
                             </td>
                         </tr>
                     )
@@ -105,6 +134,7 @@ const Home = () => {
 
             </tbody>
             </table>
+            </div>
             { loading && <Loader/> }
 
             <button type="button" className="btn btn-primary d-none" ref={modalTrigger} data-bs-toggle="modal" data-bs-target="#exampleModal">

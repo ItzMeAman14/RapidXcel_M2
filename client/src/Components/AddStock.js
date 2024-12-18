@@ -1,7 +1,9 @@
 import React,{ useState,useEffect } from 'react';
 import Alert from './Alert';
+import { useNavigate } from 'react-router-dom';
 
 const AddStock = () => {
+    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -31,6 +33,9 @@ const AddStock = () => {
             msg:data[Object.keys(data)[0]],
             status:true
         })        
+        setTimeout(() => {
+            navigate("/")
+        },2000)
     }
 
     useEffect(() => {
