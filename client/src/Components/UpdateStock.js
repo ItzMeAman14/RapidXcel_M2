@@ -5,17 +5,24 @@ import { useParams, useNavigate } from 'react-router-dom';
 const UpdateStock = () => {
     const navigate = useNavigate();
     const params = useParams();
+    const [stock, setStock] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [weight, setWeight] = useState('');
     const [alert, setalert] = useState({type:"success",msg:"Default",status:false});
     
+    const getStockbyID = async () => {
+        const res = await fetch(`http://127.0.0.1:5000/getStock/${params.id}`);
+        const data = await res.json();
+        setStock(data[0]);
+        
+    }
 
     const updateStock = async (event) => {
         event.preventDefault();
         const res = await fetch("http://127.0.0.1:5000/updateStock",{
-            method:"POST",
+            method:"PUT",
             headers:{
                 "Content-Type":"application/json"
             },
@@ -44,6 +51,20 @@ const UpdateStock = () => {
             setalert({status:false})
         },2000)
     }, [alert.status]);
+
+    useEffect(() => {
+    // eslint-disable-next-line
+      getStockbyID();
+    }, []);
+
+    useEffect(() => {
+      if(stock != null){
+        setName(stock.stock_name);
+        setPrice(stock.price);
+        setQuantity(stock.quantity);
+        setWeight(stock.weight);
+      }
+    }, [stock]);
 
   return (
       <div className='container my-5'>

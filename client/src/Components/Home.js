@@ -39,7 +39,7 @@ const Home = () => {
             console.log(id);
             
             const res = await fetch("http://127.0.0.1:5000/deleteStock",{
-                method:"POST",
+                method:"DELETE",
                 headers:{
                     "Content-Type":"application/json"
                 },
